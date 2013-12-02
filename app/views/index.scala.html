@@ -1,0 +1,40 @@
+@(message: String)(implicit request: RequestHeader)
+
+
+@main("Websocket test") {
+
+    <script type="text/javascript" charset="utf-8">
+    
+        $(function() {
+            
+            var WS = window['MozWebSocket'] ? MozWebSocket : WebSocket
+            var testSocket = new WS("@routes.Websocket.index().webSocketURL()")
+            
+            var sendMessage = function() {
+                testSocket.send($("#talk").val())
+                $("#talk").val('')
+            }
+            
+            $("#sendbtn").click(sendMessage)
+            
+            var receiveEvent = function(event) {
+                var data = event.data
+                $("#badger").text(data)
+                
+            }
+            
+            testSocket.onmessage = receiveEvent
+        })
+    
+	</script>
+	
+	<form id="frm" onsubmit="return false;">
+	<input id="sendbtn" value="push" type="button">
+	<input id="talk" value="AManAPlanACanalPanama!"/>
+	</form>
+	<br>
+	<div>
+		<span id="badger">Badger</span>
+	</div>
+
+}
