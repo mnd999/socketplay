@@ -1,28 +1,32 @@
 package controllers
 
-import play.api._
-import play.api.mvc._
-import play.api.libs.iteratee.Iteratee
-import play.api.libs.iteratee.Enumerator
-import play.api.libs.iteratee.Concurrent
+import scala.concurrent.duration.DurationInt
+import scala.concurrent.future
+
+import actors.GithubFriends
+import actors.StringMsg
 import akka.actor.Actor
-import play.api.libs.concurrent.Akka
-import play.api.Play.current
-import play.api.libs.concurrent.Execution.Implicits._
 import akka.actor.Props
+import akka.actor.actorRef2Scala
 import akka.pattern.ask
 import akka.util.Timeout
-import concurrent.duration._
-import concurrent._
+import play.api.Play.current
+import play.api.libs.concurrent.Akka
+import play.api.libs.concurrent.Execution.Implicits.defaultContext
+import play.api.libs.iteratee.Concurrent
+import play.api.libs.iteratee.Iteratee
+import play.api.mvc.Controller
+import play.api.mvc.WebSocket
 
 object Websocket extends Controller {
 
-  val reverser = Akka.system.actorOf(Props[Reverser])
+  val reverser = Akka.system.actorOf(Props[GithubFriends])
+  
+  implicit val timeout = Timeout(5 seconds)
   
   def index = WebSocket.async[String] { request =>
     future {
     	val (outenum, outchannel) = Concurrent.broadcast[String]
-    	implicit val timeout = Timeout(5 seconds)
 
 	    var in = Iteratee.foreach[String]{
 	      s => (reverser ? StringMsg(s)).map {
@@ -57,6 +61,9 @@ object Websocket extends Controller {
       }
     }
   }
- 
-  case class StringMsg(str : String)
+  
+  
+
+  
+
 }
