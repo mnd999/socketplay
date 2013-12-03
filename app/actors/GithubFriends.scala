@@ -52,7 +52,7 @@ class GithubFriends extends Actor with PlayJsonSupport {
       
       val json : Future[Seq[String]] = response.map(response => response.entity.as[JsArray] match {
         case Right(json) => json.value.map(js => (js \ "login").as[String])
-        case Left(error) => throw new RuntimeException("error")
+        case Left(error) => List()
       })
       
       GitHubFriendList(Await.result(json, 5 seconds))
