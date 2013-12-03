@@ -59,5 +59,5 @@ class GithubFriends extends Actor with PlayJsonSupport {
     }
     
      
-  case class GitHubFriendList(friends : Seq[String])
+  	case class GitHubFriendList(friends : Seq[String])
   }

@@ -20,7 +20,7 @@ import play.api.mvc.WebSocket
 
 object Websocket extends Controller {
 
-  val reverser = Akka.system.actorOf(Props[GithubFriends])
+  val worker = Akka.system.actorOf(Props[GithubFriends])
   
   implicit val timeout = Timeout(5 seconds)
   
@@ -29,7 +29,7 @@ object Websocket extends Controller {
     	val (outenum, outchannel) = Concurrent.broadcast[String]
 
 	    var in = Iteratee.foreach[String]{
-	      s => (reverser ? StringMsg(s)).map {
+	      s => (worker ? StringMsg(s)).map {
 	        	case StringMsg(stringMsg) => outchannel.push(stringMsg)
 	      }  			
 	      println(s)
