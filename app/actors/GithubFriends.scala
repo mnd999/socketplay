@@ -34,30 +34,34 @@ class GithubFriends extends Actor with PlayJsonSupport {
       case StringMsg(s) => {
     	agent.sendOff(updateAgent)
         sender ! StringMsg(agent.await.friends.mkString(","))
+        system.scheduler.schedule(1 minute, 1 minute)( agent.sendOff(updateAgent))
         become(receiveLater)
       }
     }
       
     def receiveLater : Receive = {
       case StringMsg(s) => {
-        sender ! StringMsg(agent.get.friends.mkString(","))
-        agent.sendOff(updateAgent)
-      }
+        sender ! StringMsg(agent.get.friends.mkString(", "))
+      } 
     }
     
-    def updateAgent(list : GitHubFriendList) : GitHubFriendList  = {
+    private def updateAgent(list : GitHubFriendList) : GitHubFriendList  = {
+      println("Updating friend list")
       
       val response: Future[HttpResponse] =
     		  (IO(Http) ? HttpRequest(GET, Uri(gitHubUrl))).mapTo[HttpResponse]
       
       val json : Future[Seq[String]] = response.map(response => response.entity.as[JsArray] match {
-        case Right(json) => json.value.map(js => (js \ "login").as[String])
+        case Right(json) => extractUsernameFromJson(json)
         case Left(error) => List()
       })
       
       GitHubFriendList(Await.result(json, 5 seconds))
     }
     
+    private def extractUsernameFromJson(json : JsArray) : Seq[String] = {
+      json.value.map(js => (js \ "login").as[String])
+    }
      
   	case class GitHubFriendList(friends : Seq[String])
   }
