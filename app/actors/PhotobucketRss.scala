@@ -31,7 +31,7 @@ import scala.xml.Node
 
 class PhotobucketRecent extends Actor {
 
-  private val photobucketurl = "http://feed.photobucket.com/recent/images/feed.rss" //"http://photobucket.com/recentuploads?page=1"
+  private val photobucketurl = "http://feed.photobucket.com/recent/images/feed.rss"
 
   implicit val timeout = Timeout(5 seconds)
 
@@ -114,7 +114,7 @@ class PhotoBucketFetcher extends Actor {
 	      }
 	    })
 	    saveMetaData(photo, filename)
-    } else println("Got it!")
+    } else println("Already Got it!")
     
   }
 
