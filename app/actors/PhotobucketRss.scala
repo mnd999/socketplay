@@ -124,3 +124,5 @@ class PhotoBucketFetcher extends Actor {
   }
       
 }
+
+case class PhotoMsg(user: String, url: String, webUrl: String)
