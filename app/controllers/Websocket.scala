@@ -20,7 +20,7 @@ import actors.PhotobucketRecent
 
 object Websocket extends Controller {
 
-  val reverser = Akka.system.actorOf(Props[PhotobucketRecent])
+  val photo = Akka.system.actorOf(Props[PhotobucketRecent])
   
   implicit val timeout = Timeout(5 seconds)
   
@@ -29,7 +29,7 @@ object Websocket extends Controller {
     	val (outenum, outchannel) = Concurrent.broadcast[String]
 
 	    var in = Iteratee.foreach[String]{
-	      s => (reverser ? StringMsg(s)).map {
+	      s => (photo ? StringMsg(s)).map {
 	        	case StringMsg(stringMsg) => outchannel.push(stringMsg)
 	      }  			
 	      println(s)
