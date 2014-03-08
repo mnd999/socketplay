@@ -13,7 +13,8 @@ object ApplicationBuild extends Build {
     anorm,
     "com.typesafe.akka" % "akka-agent_2.10" % "2.1.4",
     "io.spray" % "spray-can" % "1.1.0",
-    "io.spray" % "spray-httpx" % "1.1.0"
+    "io.spray" % "spray-httpx" % "1.1.0",
+    "org.mongodb" %% "casbah" % "2.5.0"
   )
 
 

@@ -2,7 +2,6 @@ package controllers
 
 import scala.concurrent.duration.DurationInt
 import scala.concurrent.future
-
 import actors.GithubFriends
 import actors.StringMsg
 import akka.actor.Actor
@@ -17,10 +16,11 @@ import play.api.libs.iteratee.Concurrent
 import play.api.libs.iteratee.Iteratee
 import play.api.mvc.Controller
 import play.api.mvc.WebSocket
+import actors.PhotobucketRecent
 
 object Websocket extends Controller {
 
-  val reverser = Akka.system.actorOf(Props[GithubFriends])
+  val reverser = Akka.system.actorOf(Props[PhotobucketRecent])
   
   implicit val timeout = Timeout(5 seconds)
   
